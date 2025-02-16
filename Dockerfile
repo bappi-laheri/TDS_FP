@@ -1,18 +1,22 @@
-# Use the official Python image as the base image
-FROM python:3.11
+FROM python
 
-# Set the working directory inside the container
+# Install curl and Node.js
+RUN apt-get update && apt-get install -y curl \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g prettier@3.4.2 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y git
+
+RUN git config --global user.name "bappi-laheri" && \
+    git config --global user.email "23f2001529@ds.study.iitm.ac.in"
+
 WORKDIR /app
 
-# Copy the current directory contents into the container
 COPY . /app
+#COPY ./requirements.txt /app/requirements.txt
 
-# Install required Python packages
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+RUN pip install -r /app/requirements.txt
 
-# Expose port 8000 for FastAPI
-EXPOSE 8000
-
-# Command to run the FastAPI app
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD uvicorn app:app --host 0.0.0.0 --port 8000 --reload --reload-exclude data --reload-exclude datagen.py
