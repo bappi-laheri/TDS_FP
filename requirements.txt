@@ -45,3 +45,11 @@ Pillow
 gitpython
 duckdb
 markdown
+fastapi
+uvicorn
+openai
+sqlite3
+requests
+pillow
+pdfplumber
+pandas
